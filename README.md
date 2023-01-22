@@ -224,3 +224,31 @@ public class ResponseJsonServlet extends HelloServlet {
     }
 }
 ````
+## Servlet with JSP
+### 1. Servlet MVC
+   + WEB-INF 디렉토리 하위에 JSP 파일 생성 시 컨트롤러를 통해서만 접근할 수 있다
+   + Redriect => 클라이언트에게 갔다가 다시 호출 / Forword => 서버 내부에서 호출
+
+#### -> View와 Service logic을 분리할 수 있지만 아직 공통 처리가 어렵다.
+````java
+@WebServlet(name = "mvcMemberSaveServlet", urlPatterns = "/servlet-mvc/members/save")
+public class MvcMemberSaveServlet extends HttpServlet {
+
+    private final MemberRepository memberRepository = MemberRepository.getInstance();
+
+    @Override
+    protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String username = req.getParameter("username");
+        int age = Integer.parseInt(req.getParameter("age"));
+
+        Member member = new Member(username, age);
+        memberRepository.save(member);
+
+        req.setAttribute("member", member); // 데이터를 JSP에 전달 -> getAttribute || ${}과 같은 JSP 문법
+
+        String viewPath = "/WEB-INF/views/save-result.jsp";
+        RequestDispatcher requestDispatcher = req.getRequestDispatcher(viewPath);
+        requestDispatcher.forward(req, resp);
+    }
+}
+````
