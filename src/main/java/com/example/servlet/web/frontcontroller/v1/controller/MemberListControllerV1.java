@@ -1,31 +1,28 @@
-package com.example.servlet.web.servletmvc;
+package com.example.servlet.web.frontcontroller.v1.controller;
 
 import com.example.servlet.domain.member.Member;
 import com.example.servlet.domain.member.MemberRepository;
+import com.example.servlet.web.frontcontroller.v1.ControllerV1;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet(name = "mvcMemberListServlet", urlPatterns = "/servlet-mvc/members")
-public class MvcMemberListServlet extends HttpServlet {
+public class MemberListControllerV1 implements ControllerV1 {
 
     private final MemberRepository memberRepository = MemberRepository.getInstance();
 
-
     @Override
-    protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void process(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         List<Member> members = memberRepository.findAll();
-        req.setAttribute("members", members);
+        request.setAttribute("members", members);
 
         String viewPath = "/WEB-INF/views/members.jsp";
-        RequestDispatcher requestDispatcher = req.getRequestDispatcher(viewPath);
-        requestDispatcher.forward(req, resp);
+        RequestDispatcher requestDispatcher = request.getRequestDispatcher(viewPath);
+        requestDispatcher.forward(request, response);
     }
 }
